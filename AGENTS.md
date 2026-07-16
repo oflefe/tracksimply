@@ -46,6 +46,7 @@
 ## Verification
 
 - Maintain 100% test coverage for changed behavior.
+- Update documentation after changing behavior
 - Write test descriptions in `GIVEN ... WHEN ... THEN ...` format.
 - Test module metadata when changing imports, exports, providers, controllers, or factories.
 - Run format, lint, typecheck, tests, and build before completion.
