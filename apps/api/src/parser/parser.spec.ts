@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { parseFoodInput } from './parser.js';
 
 describe('deterministic food parser', () => {
-  it('parses explicit quantities and modifiers', () => {
+  it('GIVEN spaced explicit quantities WHEN parsed THEN returns quantities, units, and modifiers', () => {
     expect(parseFoodInput('2 fried eggs\n100 g sourdough bread')).toEqual([
       {
         rawText: '2 fried eggs',
@@ -22,7 +22,19 @@ describe('deterministic food parser', () => {
       },
     ]);
   });
-  it('parses fractions and vague portions', () => {
+  it('GIVEN attached explicit units WHEN parsed THEN returns the same quantity and unit', () => {
+    expect(parseFoodInput('100g sourdough bread')).toEqual([
+      {
+        rawText: '100g sourdough bread',
+        normalizedFoodName: 'sourdough bread',
+        quantity: 100,
+        unit: 'GRAM',
+        quantifier: null,
+        preparationModifiers: [],
+      },
+    ]);
+  });
+  it('GIVEN fractions and vague portions WHEN parsed THEN returns their semantic values', () => {
     expect(
       parseFoodInput('½ avocado; a handful of almonds; some cheese'),
     ).toEqual([

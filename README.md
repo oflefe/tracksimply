@@ -10,6 +10,7 @@ docker compose up -d
 cp .env.example .env
 pnpm db:migrate
 pnpm db:seed
+pnpm db:studio
 pnpm dev
 ```
 

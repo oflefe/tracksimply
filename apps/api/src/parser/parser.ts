@@ -55,6 +55,10 @@ const unitAliases: Record<string, UnitName> = {
   bowl: 'BOWL',
   serving: 'SERVING',
 };
+const quantityPattern = new RegExp(
+  `^(\\d+(?:\\.\\d+)?|\\d+\\/\\d+|[½¼¾⅓⅔]|one|two|three|four|five|half|quarter)(?=\\s|$|(?:${Object.keys(unitAliases).join('|')})\\b)\\s*`,
+  'i',
+);
 const numberWords: Record<string, number> = {
   one: 1,
   two: 2,
@@ -120,9 +124,7 @@ export function extractQuantity(text: string): {
   quantity: number | null;
   remainder: string;
 } {
-  const match = text.match(
-    /^(\d+(?:\.\d+)?|\d+\/\d+|[½¼¾⅓⅔]|one|two|three|four|five|half|quarter)(?=\s|$)\s*/i,
-  );
+  const match = text.match(quantityPattern);
   if (!match || !match[1]) {
     return { quantity: null, remainder: text };
   }

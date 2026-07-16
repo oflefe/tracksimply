@@ -17,6 +17,7 @@
     "typecheck": "pnpm -r typecheck",
     "test": "pnpm -r test",
     "db:migrate": "pnpm --filter @calorie-tracker/api prisma:migrate",
-    "db:seed": "pnpm --filter @calorie-tracker/api prisma:seed"
+    "db:seed": "pnpm --filter @calorie-tracker/api prisma:seed",
+    "db:studio": "pnpm --filter @calorie-tracker/api prisma:studio"
   }
 }
