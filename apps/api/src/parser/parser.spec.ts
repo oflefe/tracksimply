@@ -64,4 +64,45 @@ describe('deterministic food parser', () => {
       },
     ]);
   });
+
+  it('GIVEN conversational meal text WHEN parsed THEN extracts and parses each food mention', () => {
+    expect(
+      parseFoodInput(
+        'I had two fried eggs with sourdough, some feta and a small latte',
+      ),
+    ).toEqual([
+      {
+        rawText: 'two fried eggs',
+        normalizedFoodName: 'eggs',
+        quantity: 2,
+        unit: null,
+        quantifier: null,
+        preparationModifiers: ['FRIED'],
+      },
+      {
+        rawText: 'sourdough',
+        normalizedFoodName: 'sourdough',
+        quantity: null,
+        unit: null,
+        quantifier: null,
+        preparationModifiers: [],
+      },
+      {
+        rawText: 'some feta',
+        normalizedFoodName: 'feta',
+        quantity: null,
+        unit: null,
+        quantifier: 'SOME',
+        preparationModifiers: [],
+      },
+      {
+        rawText: 'a small latte',
+        normalizedFoodName: 'latte',
+        quantity: null,
+        unit: null,
+        quantifier: 'SMALL',
+        preparationModifiers: [],
+      },
+    ]);
+  });
 });
