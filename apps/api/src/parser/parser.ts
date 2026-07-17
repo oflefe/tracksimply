@@ -1,5 +1,6 @@
 import { z } from 'zod';
 import type { UnitName } from '@calorie-tracker/contracts';
+import { extractCandidateSegments } from './candidate-extractor.js';
 
 export const quantifiers = [
   'SOME',
@@ -99,11 +100,7 @@ export function normalizeRawInput(rawText: string): string {
     .trim();
 }
 export function splitInputIntoSegments(rawText: string): string[] {
-  return normalizeRawInput(rawText)
-    .split(/\n|;|,(?!\s*(?:and\b)?\d)/i)
-    .flatMap((segment) => segment.split(/\s+and\s+/i))
-    .map((segment) => segment.trim())
-    .filter(Boolean);
+  return extractCandidateSegments(normalizeRawInput(rawText));
 }
 function parseNumber(value: string): number | null {
   const lower = value.toLowerCase();
