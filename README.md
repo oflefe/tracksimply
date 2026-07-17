@@ -18,9 +18,13 @@ API: `http://localhost:3001`, web: `http://localhost:3000`. Run `pnpm lint`, `pn
 
 ## Architecture
 
-`Input -> parser -> local food resolver -> provider fallback -> portion resolver -> pure nutrition calculator -> preview -> transactional confirmation -> meal log snapshots`.
+`Input -> NLP candidate extraction -> deterministic parser -> local food resolver -> provider fallback -> portion resolver -> pure nutrition calculator -> preview -> transactional confirmation -> meal log snapshots`.
 
-The parser normalizes lines, separators, quantities, units, basic number words, fractions, quantifiers, and preparation modifiers. Resolution checks aliases and local foods before FoodData Central. Provider responses are mapped at the adapter boundary and cached on demand. Explicit portions precede user rules, exact/system rules, category defaults, and provider servings. Assumptions and uncertainty are returned in preview diagnostics.
+Conversational text is first passed through `compromise` to extract noun-phrase ingredient candidates. This allows input such as `I had two fried eggs with sourdough, some feta and a small latte` to reach the existing pipeline as four separate food mentions. The deterministic parser remains responsible for quantities, units, basic number words, fractions, quantifiers, and preparation modifiers.
+
+The NLP step is deliberately not treated as food-domain NER. It only proposes candidate spans. Every candidate still goes through the food resolver and its confidence thresholds, so uncertain or invalid matches surface as `NEEDS_REVIEW` instead of being silently accepted.
+
+Resolution checks aliases and local foods before FoodData Central. Provider responses are mapped at the adapter boundary and cached on demand. Explicit portions precede user rules, exact/system rules, category defaults, and provider servings. Assumptions and uncertainty are returned in preview diagnostics.
 
 `FoodLogItem` stores calculated macros and a source snapshot, so later catalogue changes do not change historical logs. Confirmation revalidates food IDs, recalculates server-side, and writes the event, meal log, items, totals, and optional idempotency record in one transaction.
 
@@ -44,6 +48,8 @@ The response contains one item per mention, resolution confidence, candidates, g
 ## Configuration and limitations
 
 See `.env.example`. `FDC_API_KEY` is optional for seeded examples and required for provider fallback. Seed values are documented demo fixtures, not a nutrition authority. Authentication, recipe/template logging workflows, richer correction UX, and production deployment hardening remain intentionally deferred from this first vertical slice.
+
+Noun-phrase extraction improves conversational input coverage but does not guarantee correct ingredient boundaries. Coordinated dish names, mixed dishes, and unusual wording can still require user review or future food-domain model support. The food resolver remains the final acceptance gate.
 
 ### FoodData Central API key
 
